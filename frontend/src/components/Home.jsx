@@ -1,7 +1,9 @@
 
 const Home = () => {
   return (
-    <div>home</div>
+    <div>home
+      
+    </div>
   )
 }
 
