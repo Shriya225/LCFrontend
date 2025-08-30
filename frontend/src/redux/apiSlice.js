@@ -16,7 +16,7 @@ export const apiSlice = createApi({
   }),
   endpoints: (builder) => ({
     getProfile: builder.query({
-      query: () => 'profile/',
+      query: () => 'user/entry/',
     }),
     login: builder.mutation({
       query: (credentials) => ({
@@ -25,7 +25,14 @@ export const apiSlice = createApi({
         body: credentials,
       }),
     }),
+    addEntry: builder.mutation({
+      query: (credentials) => ({
+        url: 'user/entry/',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
 })
 
-export const { useGetProfileQuery, useLoginMutation } = apiSlice
+export const { useGetProfileQuery, useLoginMutation,useAddEntryMutation } = apiSlice
