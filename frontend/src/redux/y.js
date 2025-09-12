@@ -1,43 +1,39 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setAccessToken, logout } from './authSlice';
+
 // Base query
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8000/",
-  credentials: 'include',
-  prepareHeaders: (headers, { endpoint, getState }) => {
-    // Skip auth header for these public endpoints
-    const publicEndpoints = ['home','login'];
-
-    if (!publicEndpoints.includes(endpoint)) {
-      const token = getState().auth.accessToken;
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
+  baseUrl: "http://127.0.0.1:8000",
+  credentials: "include", // important for cookies
+  prepareHeaders: (headers, { getState }) => {
+    const token = getState().auth.accessToken;
+    if (token) {
+      headers.set("authorization", `Bearer ${token}`);
     }
     return headers;
   },
 });
 
+// Base query wrapper for refresh
 const baseQueryWithReauth = async (args, api, extraOptions) => {
-  
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
-  const refreshResult = await fetchBaseQuery({
-      baseUrl: "http://localhost:8000/",
-      credentials: 'include',
-      prepareHeaders: (headers) => {
-        // Don't attach any auth header here
-        return headers;
-      },
-    })({ url: 'refresh/', method: 'POST' }, api, extraOptions);
+    // token expired → try refresh
+    const refreshResult = await baseQuery(
+      { url: "refresh/", method: "POST" },
+      api,
+      extraOptions
+    );
+
     if (refreshResult.data?.access) {
-      api.dispatch(setAccessToken(refreshResult.data.access));
+      // save new token
+      api.dispatch({ type: "auth/setAccessToken", payload: refreshResult.data.access });
+
+      // retry original query
       result = await baseQuery(args, api, extraOptions);
     } else {
-      // api.dispatch(logout());
-      console.log("oops!! cant refersh....");
-      
+      // refresh failed → logout
+      api.dispatch({ type: "auth/logout" });
     }
   }
 
@@ -67,14 +63,6 @@ export const apiSlice = createApi({
         body: credentials,
       }),
     }),
-    logout: builder.mutation({
-      query: (credentials) => ({
-        url: "logout/",
-        method: "POST",
-        
-      
-      }),
-    }),
 
     // add entry
     addEntry: builder.mutation({
@@ -92,5 +80,5 @@ export const apiSlice = createApi({
 export const {
   useGetListQuery,
   useLoginMutation,
-  useAddEntryMutation,useLogoutMutation
+  useAddEntryMutation,
 } = apiSlice;

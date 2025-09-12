@@ -17,11 +17,11 @@ function Home() {
       const result = await addEntry(data).unwrap();
       setRes(result);
       
-      // Add to recent searches (limit to 5)
-      setRecentSearches(prev => {
-        const updated = [{roll_no: data.roll_no, name: result.student_details.name}, ...prev];
-        return updated.slice(0, 5);
-      });
+      // // Add to recent searches (limit to 5)
+      // setRecentSearches(prev => {
+      //   const updated = [{roll_no: data.roll_no, name: result.student_details.name}, ...prev];
+      //   return updated.slice(0, 5);
+      // });
       
       toast.success("Student details retrieved successfully!");
     } catch (err) {

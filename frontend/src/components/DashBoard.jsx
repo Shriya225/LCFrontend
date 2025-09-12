@@ -1,12 +1,15 @@
 import { useSearchParams } from "react-router-dom";
 import { useGetListQuery } from "../redux/apiSlice";
 import { Container, Row, Col, Card, Table, Spinner, Form, Button, Badge } from "react-bootstrap";
-import { FaFilter, FaFileExport, FaUsers, FaCalendarAlt, FaGraduationCap } from "react-icons/fa";
+import { FaFilter, FaFileExport, FaUsers, FaCalendarAlt, FaGraduationCap, FaSort } from "react-icons/fa";
+import DepartmentChart from "./DepartmentChart";
 
 const DashBoard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = Object.fromEntries(searchParams.entries());
-
+if (!filters.date) {
+  filters.date = new Date().toISOString().split("T")[0];
+}
   const { data, error, isLoading } = useGetListQuery(filters);
 
   const handleFilterChange = (e) => {
@@ -64,6 +67,8 @@ const DashBoard = () => {
   return (
     <Container className="py-4">
       {/* Header */}
+      {/* <DepartmentChart/> */} 
+
       <Row className="mb-4">
         <Col>
           <div className="d-flex align-items-center mb-3">
@@ -82,24 +87,24 @@ const DashBoard = () => {
               <FaUsers />
             </div>
             <div>
-              <h1 className="h2 mb-0" style={{ color: '#2c3e50' }}>Student Dashboard</h1>
+              <h1 className="h2 mb-0" style={{ color: '#2c3e50', fontWeight: '600' }}>Student Dashboard</h1>
               <p className="text-muted mb-0">Manage and monitor student late entries</p>
             </div>
           </div>
         </Col>
       </Row>
 
-      <Card className="shadow border-0">
+      <Card className="shadow border-0" style={{ borderRadius: '12px', overflow: 'hidden' }}>
         <div style={{
           height: '4px',
           background: 'linear-gradient(90deg, #0d6efd, #6f42c1)',
           width: '100%'
         }}></div>
         
-        <Card.Header className="bg-white border-0 pt-4">
+        <Card.Header className="bg-white border-0 pt-4 pb-3">
           <Row className="align-items-center">
             <Col md={6}>
-              <h5 className="mb-0 d-flex align-items-center">
+              <h5 className="mb-0 d-flex align-items-center" style={{ fontWeight: '600', color: '#2c3e50' }}>
                 <FaFilter className="me-2 text-primary" />
                 Filter Students
               </h5>
@@ -110,6 +115,7 @@ const DashBoard = () => {
                 size="sm" 
                 onClick={clearFilters}
                 disabled={Object.keys(filters).length === 0}
+                style={{ borderRadius: '6px', fontWeight: '500' }}
               >
                 Clear Filters
               </Button>
@@ -122,8 +128,8 @@ const DashBoard = () => {
           <Row className="g-3 mb-4">
             <Col md={6} lg={3}>
               <Form.Group>
-                <Form.Label className="fw-semibold d-flex align-items-center">
-                  <FaCalendarAlt className="me-2 text-muted" />
+                <Form.Label className="fw-semibold d-flex align-items-center" style={{ fontSize: '0.9rem', color: '#495057' }}>
+                  <FaCalendarAlt className="me-2" style={{ color: '#6c757d' }} />
                   Date
                 </Form.Label>
                 <Form.Control
@@ -131,14 +137,20 @@ const DashBoard = () => {
                   name="date"
                   value={filters.date || ""}
                   onChange={handleFilterChange}
+                  style={{ borderRadius: '8px', border: '1px solid #dee2e6' }}
                 />
               </Form.Group>
             </Col>
 
             <Col md={6} lg={3}>
               <Form.Group>
-                <Form.Label className="fw-semibold">Year</Form.Label>
-                <Form.Select name="year" value={filters.year || ""} onChange={handleFilterChange}>
+                <Form.Label className="fw-semibold" style={{ fontSize: '0.9rem', color: '#495057' }}>Year</Form.Label>
+                <Form.Select 
+                  name="year" 
+                  value={filters.year || ""} 
+                  onChange={handleFilterChange}
+                  style={{ borderRadius: '8px', border: '1px solid #dee2e6' }}
+                >
                   <option value="">All Years</option>
                   <option value="4">4th Year</option>
                   <option value="3">3rd Year</option>
@@ -150,8 +162,13 @@ const DashBoard = () => {
 
             <Col md={6} lg={3}>
               <Form.Group>
-                <Form.Label className="fw-semibold">Branch</Form.Label>
-                <Form.Select name="branch" value={filters.branch || ""} onChange={handleFilterChange}>
+                <Form.Label className="fw-semibold" style={{ fontSize: '0.9rem', color: '#495057' }}>Branch</Form.Label>
+                <Form.Select 
+                  name="branch" 
+                  value={filters.branch || ""} 
+                  onChange={handleFilterChange}
+                  style={{ borderRadius: '8px', border: '1px solid #dee2e6' }}
+                >
                   <option value="">All Branches</option>
                   <option value="CSE">CSE</option>
                   <option value="ECE">ECE</option>
@@ -164,11 +181,16 @@ const DashBoard = () => {
 
             <Col md={6} lg={3}>
               <Form.Group>
-                <Form.Label className="fw-semibold d-flex align-items-center">
-                  <FaGraduationCap className="me-2 text-muted" />
+                <Form.Label className="fw-semibold d-flex align-items-center" style={{ fontSize: '0.9rem', color: '#495057' }}>
+                  <FaGraduationCap className="me-2" style={{ color: '#6c757d' }} />
                   Course
                 </Form.Label>
-                <Form.Select name="course" value={filters.course || ""} onChange={handleFilterChange}>
+                <Form.Select 
+                  name="course" 
+                  value={filters.course || ""} 
+                  onChange={handleFilterChange}
+                  style={{ borderRadius: '8px', border: '1px solid #dee2e6' }}
+                >
                   <option value="">All Courses</option>
                   <option value="B.Tech">B.Tech</option>
                   <option value="M.Tech">M.Tech</option>
@@ -181,38 +203,78 @@ const DashBoard = () => {
           {/* Results Count */}
           {data && data.length > 0 && (
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <span className="text-muted">
+              <span className="text-muted" style={{ fontSize: '0.9rem' }}>
                 Showing <strong>{data.length}</strong> student(s)
               </span>
               {Object.keys(filters).length > 0 && (
-                <Badge bg="primary" className="px-3 py-2">
+                <Badge bg="primary" className="px-3 py-2" style={{ borderRadius: '6px', fontWeight: '500' }}>
                   Filters Applied
                 </Badge>
               )}
             </div>
           )}
 
-          {/* Data Table */}
+          {/* Modern Table */}
           {data && data.length > 0 ? (
-            <div className="table-responsive">
-              <Table striped hover className="mb-0">
-                <thead style={{ backgroundColor: '#2c3e50', color: 'white' }}>
+            <div className="table-responsive" style={{ borderRadius: '10px', overflow: 'hidden', border: '1px solid #e9ecef' }}>
+              <Table hover className="mb-0">
+                <thead style={{ 
+                  backgroundColor: '#f8f9fa',
+                  borderBottom: '2px solid #e9ecef'
+                }}>
                   <tr>
-                    <th>Roll No</th>
-                    <th>Name</th>
-                    <th>Year</th>
-                    <th>Branch</th>
-                    <th>Course</th>
+                    <th style={{ padding: '1rem', fontWeight: '600', color: '#495057', fontSize: '0.9rem' }}>
+                      <div className="d-flex align-items-center">
+                        Roll No
+                        <FaSort className="ms-1" style={{ fontSize: '0.7rem', color: '#6c757d' }} />
+                      </div>
+                    </th>
+                    <th style={{ padding: '1rem', fontWeight: '600', color: '#495057', fontSize: '0.9rem' }}>Name</th>
+                    <th style={{ padding: '1rem', fontWeight: '600', color: '#495057', fontSize: '0.9rem' }}>Year</th>
+                    <th style={{ padding: '1rem', fontWeight: '600', color: '#495057', fontSize: '0.9rem' }}>Branch</th>
+                    <th style={{ padding: '1rem', fontWeight: '600', color: '#495057', fontSize: '0.9rem' }}>Course</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((e) => (
-                    <tr key={e.roll_no}>
-                      <td className="fw-semibold">{e.roll_no}</td>
-                      <td>{e.name}</td>
-                      <td><Badge bg="secondary">Year {e.year}</Badge></td>
-                      <td><Badge bg="info">{e.branch}</Badge></td>
-                      <td>{e.course}</td>
+                  {data.map((e, index) => (
+                    <tr key={e.roll_no} style={{ 
+                      backgroundColor: index % 2 === 0 ? '#ffffff' : '#fafafa',
+                      borderBottom: '1px solid #f1f3f4',
+                      transition: 'background-color 0.2s ease'
+                    }}>
+                      <td style={{ padding: '1rem', fontWeight: '600', color: '#2c3e50' }}>{e.roll_no}</td>
+                      <td style={{ padding: '1rem', color: '#495057' }}>{e.name}</td>
+                      <td style={{ padding: '1rem' }}>
+                        <Badge 
+                          bg="outline-secondary" 
+                          style={{ 
+                            backgroundColor: 'transparent',
+                            color: '#6c757d',
+                            border: '1px solid #dee2e6',
+                            borderRadius: '4px',
+                            padding: '0.35rem 0.6rem',
+                            fontWeight: '500'
+                          }}
+                        >
+                          Year {e.year}
+                        </Badge>
+                      </td>
+                      <td style={{ padding: '1rem' }}>
+                        <Badge 
+                          bg="outline-info" 
+                          style={{ 
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            color: '#0d6efd',
+                            border: '1px solid rgba(13, 110, 253, 0.2)',
+                            borderRadius: '4px',
+                            padding: '0.35rem 0.6rem',
+                            fontWeight: '500'
+                          }}
+                        >
+                          {e.branch}
+                        </Badge>
+                      </td>
+                      <td style={{ padding: '1rem', color: '#495057' }}>{e.course}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -221,7 +283,7 @@ const DashBoard = () => {
           ) : (
             <div className="text-center py-5">
               <div className="text-muted mb-3" style={{ fontSize: '3rem' }}>📊</div>
-              <h5 className="text-muted">No student records found</h5>
+              <h5 className="text-muted" style={{ fontWeight: '500' }}>No student records found</h5>
               <p className="text-muted">Try adjusting your filters or check back later.</p>
             </div>
           )}
@@ -230,34 +292,27 @@ const DashBoard = () => {
           {data && data.length > 0 && (
             <div className="d-flex justify-content-end mt-4">
               <Button
-                variant="primary"
-                className="d-flex align-items-center px-4 py-2"
-                onClick={() => {
-                  const query = searchParams.toString();
-                  const exportUrl = `http://127.0.0.1:8000/user/export/?${query}`;
-                  window.open(exportUrl, "_blank");
-                }}
-              >
-                <FaFileExport className="me-2" />
-                Export Data
-              </Button>
+  variant="primary"
+  className="d-flex align-items-center px-4 py-2"
+  onClick={() => {
+    const query = new URLSearchParams({
+      date: filters.date || new Date().toISOString().split("T")[0],  // default to today
+      ...Object.fromEntries(searchParams.entries()),
+    }).toString();
+
+    const exportUrl = `http://127.0.0.1:8000/user/export/?${query}`;
+    window.open(exportUrl, "_blank");
+  }}
+  style={{ borderRadius: '8px', fontWeight: '500' }}
+>
+  <FaFileExport className="me-2" />
+  Export Data
+</Button>
             </div>
           )}
         </Card.Body>
       </Card>
-
-      {/* Footer Stats */}
-      <Row className="mt-4">
-        <Col>
-          <Card className="bg-light border-0">
-            <Card.Body className="py-3 text-center">
-              <small className="text-muted">
-                MIC College Latecomer Management System • {new Date().toLocaleDateString()}
-              </small>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+          <DepartmentChart filters={filters} />
     </Container>
   );
 };
