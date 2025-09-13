@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setAccessToken, logout } from './authSlice';
 // Base query
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8000/",
+  baseUrl: "https://latecomer.onrender.com",
   credentials: 'include',
   prepareHeaders: (headers, { endpoint, getState }) => {
     // Skip auth header for these public endpoints
@@ -24,7 +24,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
   if (result.error?.status === 401) {
   const refreshResult = await fetchBaseQuery({
-      baseUrl: "http://localhost:8000/",
+      baseUrl: "https://latecomer.onrender.com",
       credentials: 'include',
       prepareHeaders: (headers) => {
         // Don't attach any auth header here
