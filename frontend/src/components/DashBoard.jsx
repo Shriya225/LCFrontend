@@ -87,7 +87,7 @@ if (!filters.date) {
               <FaUsers />
             </div>
             <div>
-              <h1 className="h2 mb-0" style={{ color: '#2c3e50', fontWeight: '600' }}>Student Dashboard</h1>
+              <h1 className="h2 mb-0" style={{ color: '#2c3e50', fontWeight: '600' }}>Latecomer Dashboard</h1>
               <p className="text-muted mb-0">Manage and monitor student late entries</p>
             </div>
           </div>

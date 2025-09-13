@@ -13,8 +13,8 @@ const Footer = () => {
       lineHeight: "1.4"
     }}>
       <Container>
-        <div>© 2025 MIC College. All rights reserved.</div>
-        <div>Latecomer Management System v2.1.4</div>
+        <div>© 2025 MIC College. </div>
+        <div>All rights reserved.</div>
       </Container>
     </footer>
   );

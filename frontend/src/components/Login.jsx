@@ -140,7 +140,7 @@ function Login() {
 
                 <div className="text-center mt-4">
                   <small className="text-muted">
-                    Restricted access for authorized personnel only
+                    {/* Restricted access for authorized personnel only */}
                   </small>
                 </div>
               </Card.Body>
