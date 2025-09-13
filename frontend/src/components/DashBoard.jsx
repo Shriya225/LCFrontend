@@ -300,7 +300,8 @@ if (!filters.date) {
       ...Object.fromEntries(searchParams.entries()),
     }).toString();
 
-    const exportUrl = `http://127.0.0.1:8000/user/export/?${query}`;
+   const exportUrl = `${import.meta.env.VITE_API_BASE_URL}/user/export/?${query}`;
+
     window.open(exportUrl, "_blank");
   }}
   style={{ borderRadius: '8px', fontWeight: '500' }}
